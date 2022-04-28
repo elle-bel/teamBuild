@@ -5,7 +5,7 @@ import mysql.connector
 conn = mysql.connector.connect(
     host="localhost",
     user="root",
-    database="test",
+    #database="put your database name here",
     #password="put your password here"
 )
 
@@ -13,6 +13,7 @@ class AllCharaCheck(Exception):
     pass
 
 cursor = conn.cursor()
+#my table is called genshinchara, see the sql file
 cursor.execute("SELECT * FROM genshinchara")
 
 print("All entries:")
