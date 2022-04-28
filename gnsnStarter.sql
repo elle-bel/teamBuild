@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 5.7.37, for Win64 (x86_64)
+-- MySQL dump 10.13  Distrib 5.7.38, for Win64 (x86_64)
 --
 -- Host: localhost    Database: test
 -- ------------------------------------------------------
--- Server version	5.7.37-log
+-- Server version	5.7.38-log
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -41,7 +41,7 @@ CREATE TABLE `genshinchara` (
 
 LOCK TABLES `genshinchara` WRITE;
 /*!40000 ALTER TABLE `genshinchara` DISABLE KEYS */;
-INSERT INTO `genshinchara` VALUES (1,'Amber','Pyro','Main DPS','Sub DPS',1,0),(2,'Kaeya','Cryo','Sub DPS',NULL,1,0),(3,'Lisa','Electro','Sub DPS','Utility',NULL,0),(4,'Barbara','Hydro','Utility',NULL,6,0),(5,'Razor','Electro','Main DPS',NULL,6,0),(6,'Xiangling','Pyro','Sub DPS','Burst Support',0,0);
+INSERT INTO `genshinchara` VALUES (1,'Amber','Pyro','Main DPS','Sub DPS',1,1),(2,'Kaeya','Cryo','Sub DPS',NULL,1,1),(3,'Lisa','Electro','Sub DPS','Utility',0,0),(4,'Barbara','Hydro','Utility',NULL,6,0),(5,'Razor','Electro','Main DPS',NULL,6,0),(6,'Xiangling','Pyro','Sub DPS','Burst Support',0,0);
 /*!40000 ALTER TABLE `genshinchara` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -54,4 +54,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-04-24 21:36:24
+-- Dump completed on 2022-04-28 19:08:15

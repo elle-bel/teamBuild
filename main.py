@@ -1,4 +1,4 @@
-from prettytable import PrettyTable, from_db_cursor
+from prettytable import from_db_cursor
 import random
 import re
 import mysql.connector
@@ -17,11 +17,26 @@ cursor = conn.cursor()
 
 #my table is called genshinchara, see the sql file
 
+#note that "NULL" entries are changed to "None" entries upon printing
 def printGenshinChara():
-    cursor.execute("SELECT name AS Name, vision AS Vision, primary_role AS 'Primary Role]', secondary_role AS 'Secondary Role', cons AS Constellations, level AS Level FROM genshinchara")
+    cursor.execute("SELECT name AS Name, vision AS Vision, primary_role AS 'Primary Role', secondary_role AS 'Secondary Role', cons AS Constellations, level AS Level FROM genshinchara")
     x = from_db_cursor(cursor)
     x.align = "l"
     print(x)
+
+def charaValid():
+    cursor.execute("SELECT name FROM genshinchara")
+    #(list(cursor.fetchall())) is a list of tuples
+    charatuples = list(cursor.fetchall())
+    #list comprehension, equivalent to making a list from a double for loop, "charas in charatuples" being the outer
+    charalist = [charaname for charas in charatuples for charaname in charas]
+    while True:
+        whichChara = input("Input the character: ")
+        whichChara = whichChara.title()
+        if whichChara not in charalist:
+            print("You do not have this character")
+        else:
+            return whichChara
 
 printGenshinChara()
 
@@ -39,21 +54,30 @@ while True:
         "-'randomWith': randomly selects a team of 4 with additional constraints. type 'none' if the constraint does not" +
         " need to apply \n ->Minimum Level: input the minimum level all characters should be \n ->Vision Types: your entry should be" +
         " either 4 words, all either a vision, or 'none', or it is simply 'none' (eg, geo geo none none) \n-'levelUp': takes a "+
-        "character name and level to update the data \n-'print': Prints the current table as is")
+        "character name and level to update the data \n-'print': Prints the current table as is \n-'addCons': takes a character name and" +
+        " number between [0,6] to update the data")
     elif (newInput == "print"): printGenshinChara()
-    elif (newInput == "levelUp"):
-        cursor.execute("SELECT name FROM genshinchara")
-        #(list(cursor.fetchall())) is a list of tuples
-        charatuples = list(cursor.fetchall())
-        #list comprehension, equivalent to making a list from a double for loop, "charas in charatuples" being the outer
-        charalist = [charaname for charas in charatuples for charaname in charas]
+    elif (newInput == "addCons"):
+        whichChara = charaValid()
+        cursor.execute("SELECT genshinchara.cons FROM genshinchara WHERE name = '" + whichChara + "'")
+        (curcons,) = cursor.fetchone()
         while True:
-            whichChara = input("Input the character leveling up: ")
-            whichChara = whichChara.title()
-            if whichChara not in charalist:
-                print("You do not have this character")
+            whatConst = input("Input the constellation this character is now at: ")
+            try:
+                whatCon = int(whatConst)
+            except ValueError:
+                print("This is not valid input")
+            if whatCon <= curcons:
+                print("The character's constellation cannot decrease/must change")
+            elif whatCon > 6:
+                print("A character can have constellation 6 at maximum")
             else:
                 break
+        cursor.execute("UPDATE genshinchara SET cons = " + str(whatCon) + " WHERE name = '" + whichChara + "'")
+        conn.commit()
+        print("Level Up Successful")
+    elif (newInput == "levelUp"):
+        whichChara = charaValid()
         cursor.execute("SELECT genshinchara.level FROM genshinchara WHERE name = '" + whichChara + "'")
         (curlevel,) = cursor.fetchone()
         while True:
@@ -124,6 +148,7 @@ while True:
                         for i in range(0,3):
                             visList.append("None")
                         break
+            #string of 4 words or 'none'
             #now doing the processing
             arrCounter = list(range(1,tableSize+1)) #creates a list mimicking the table
             charasLeft = 4
