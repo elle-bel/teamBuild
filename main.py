@@ -1,3 +1,4 @@
+from prettytable import PrettyTable, from_db_cursor
 import random
 import re
 import mysql.connector
@@ -5,22 +6,27 @@ import mysql.connector
 conn = mysql.connector.connect(
     host="localhost",
     user="root",
-    #database="put your database name here",
-    #password="put your password here"
+    database="test",
+    password="Tr@sh-Murd3r-Chi1d"
 )
 
 class AllCharaCheck(Exception):
     pass
 
 cursor = conn.cursor()
-#my table is called genshinchara, see the sql file
-cursor.execute("SELECT * FROM genshinchara")
 
-print("All entries:")
-for row in cursor:
-    print(row)
+#my table is called genshinchara, see the sql file
+
+def printGenshinChara():
+    cursor.execute("SELECT name AS Name, vision AS Vision, primary_role AS 'Primary Role]', secondary_role AS 'Secondary Role', cons AS Constellations, level AS Level FROM genshinchara")
+    x = from_db_cursor(cursor)
+    x.align = "l"
+    print(x)
+
+printGenshinChara()
 
 while True:
+
     #gets the table size after every iteration, since some commands can add rows
     cursor.execute("SELECT COUNT(chara_id) FROM genshinchara")
     (tableSize,)=cursor.fetchone()
@@ -33,7 +39,37 @@ while True:
         "-'randomWith': randomly selects a team of 4 with additional constraints. type 'none' if the constraint does not" +
         " need to apply \n ->Minimum Level: input the minimum level all characters should be \n ->Vision Types: your entry should be" +
         " either 4 words, all either a vision, or 'none', or it is simply 'none' (eg, geo geo none none) \n-'levelUp': takes a "+
-        "character name and level to update the data")
+        "character name and level to update the data \n-'print': Prints the current table as is")
+    elif (newInput == "print"): printGenshinChara()
+    elif (newInput == "levelUp"):
+        cursor.execute("SELECT name FROM genshinchara")
+        #(list(cursor.fetchall())) is a list of tuples
+        charatuples = list(cursor.fetchall())
+        #list comprehension, equivalent to making a list from a double for loop, "charas in charatuples" being the outer
+        charalist = [charaname for charas in charatuples for charaname in charas]
+        while True:
+            whichChara = input("Input the character leveling up: ")
+            whichChara = whichChara.title()
+            if whichChara not in charalist:
+                print("You do not have this character")
+            else:
+                break
+        cursor.execute("SELECT genshinchara.level FROM genshinchara WHERE name = '" + whichChara + "'")
+        (curlevel,) = cursor.fetchone()
+        while True:
+            whatLevelst = input("Input the level this character is leveling to: ")
+            try:
+                whatLevel = int(whatLevelst)
+            except ValueError:
+                print("This is not valid input")
+                continue
+            if whatLevel <= curlevel:
+                print("The character's level cannot decrease/must change")
+            else:
+                break
+        cursor.execute("UPDATE genshinchara SET level = " + str(whatLevel) + " WHERE name = '" + whichChara + "'")
+        conn.commit()
+        print("Level Up Successful")
     elif (newInput == "random"):
         charasLeft = 4
         arrCounter = list(range(1,tableSize+1)) #creates a list mimicking the table
