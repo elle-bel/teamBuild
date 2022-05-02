@@ -6,8 +6,8 @@ import mysql.connector
 conn = mysql.connector.connect(
     host="localhost",
     user="root",
-    #database="name of database",
-    #password="password here"
+    database="test",
+    password="Tr@sh-Murd3r-Chi1d"
 )
 
 class AllCharaCheck(Exception):
@@ -38,6 +38,18 @@ def charaValid():
         else:
             return whichChara
 
+def inputValid():
+    cursor.execute("SELECT name FROM genshinchara")
+    charatuples = list(cursor.fetchall())
+    charalist = [charaname for charas in charatuples for charaname in charas]
+    while True:
+        whichChara = input("Input the character you want to add: ")
+        whichChara = whichChara.title()
+        if whichChara in charalist:
+            print("You already have this character")
+        else:
+            return whichChara
+
 printGenshinChara()
 
 while True:
@@ -55,8 +67,67 @@ while True:
         " need to apply \n ->Minimum Level: input the minimum level all characters should be \n ->Vision Types: your entry should be" +
         " either 4 words, all either a vision, or 'none', or it is simply 'none' (eg, geo geo none none) \n-'levelUp': takes a "+
         "character name and level to update the data \n-'print': Prints the current table as is \n-'addCons': takes a character name and" +
-        " number between [0,6] to update the data")
+        " number between [0,6] to update the data \n-'addChara': Adds a character to the database. Will ask questions to fill out columns, some " +
+        "are not necessary, you may enter 'none'")
     elif (newInput == "print"): printGenshinChara()
+    elif (newInput == "addChara"):
+        #name
+        whichChara = inputValid()
+        #vision
+        while True:
+            newVision = input("Input the vision the character has: ")
+            mymatch = re.search('^((?!(geo|cryo|pyro|hydro|anemo|electro)).)*$', newVision, re.IGNORECASE)
+            if not mymatch:
+                print("Not a valid vision")
+            elif len(newVision.split()) == 1:
+                newVision = newVision.title()
+                break
+        #cons
+        while True:
+            numConsst = input("Input the constellation the character is at: ")
+            try:
+                numCon = int(numConsst)
+            except ValueError:
+                print("This is not valid input")
+            if numCon > 6:
+                print("A character can have constellation 6 at maximum")
+            else:
+                break
+        #level 
+        while True:
+            numLevelst = input("Input the level the character is at: ")
+            try:
+                numLevel = int(numLevelst)
+            except ValueError:
+                print("This is not valid input")
+            if numLevel > 99 or numLevel < 1:
+                print("A character must be between level 1 and 99")
+            else:
+                break
+        #primary and secondary role : do we only have a few roles or do we add more???
+        # main dps, sub dps, healer, burst support, battery, shield, crowd control, 
+        while True:
+            prolest = input("Please input the number corresponding to the primary role of the character:\n1. Main DPS\n"+
+            "2. Sub DPS\n3. Healer\n4. Burst Support\n5. Battery\n6. Shield\n7. Crowd Control\n8. None")
+            try:
+                prole = int(prolest)
+            except ValueError:
+                print("This is not valid input")
+            if prole < 1 or prole > 8:
+                print("Your number is not valid")
+            else:
+                break
+        while True:
+            srolest = input("Please input the number corresponding to the secondary role of the character:\n1. Main DPS\n"+
+            "2. Sub DPS\n3. Healer\n4. Burst Support\n5. Battery\n6. Shield\n7. Crowd Control\n8. None")
+            try:
+                srole = int(srolest)
+            except ValueError:
+                print("This is not valid input")
+            if srole < 1 or srole > 8:
+                print("Your number is not valid")
+            else:
+                break
     elif (newInput == "addCons"):
         whichChara = charaValid()
         cursor.execute("SELECT genshinchara.cons FROM genshinchara WHERE name = '" + whichChara + "'")

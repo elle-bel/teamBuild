@@ -41,7 +41,7 @@ CREATE TABLE `genshinchara` (
 
 LOCK TABLES `genshinchara` WRITE;
 /*!40000 ALTER TABLE `genshinchara` DISABLE KEYS */;
-INSERT INTO `genshinchara` VALUES (1,'Amber','Pyro','Main DPS','Sub DPS',1,1),(2,'Kaeya','Cryo','Sub DPS',NULL,1,1),(3,'Lisa','Electro','Sub DPS','Utility',0,0),(4,'Barbara','Hydro','Utility',NULL,6,0),(5,'Razor','Electro','Main DPS',NULL,6,0),(6,'Xiangling','Pyro','Sub DPS','Burst Support',0,0);
+INSERT INTO `genshinchara` VALUES (1,'Amber','Pyro','Main DPS','Sub DPS',1,1),(2,'Kaeya','Cryo','Sub DPS',NULL,1,1),(3,'Lisa','Electro','Sub DPS','Healer',0,0),(4,'Barbara','Hydro','Healer',NULL,6,0),(5,'Razor','Electro','Main DPS',NULL,6,69),(6,'Xiangling','Pyro','Sub DPS','Burst Support',6,6);
 /*!40000 ALTER TABLE `genshinchara` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -54,4 +54,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-04-28 19:08:15
+-- Dump completed on 2022-05-01 20:53:18
